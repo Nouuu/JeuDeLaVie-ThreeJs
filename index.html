@@ -38,8 +38,17 @@
         /**
          * Textures matériel
          */
+        var blackTextPath = './text/black-s.png';
+        var whiteTextPath = './text/white-s.png';
+        var greenTextPath = './text/green-s.png';
 
+        var blackText = new THREE.TextureLoader().load(blackTextPath);
+        var whiteText = new THREE.TextureLoader().load(whiteTextPath);
+        var greenText = new THREE.TextureLoader().load(greenTextPath);
 
+        var blackMat = new THREE.MeshBasicMaterial({map: blackText});
+        var whiteMat = new THREE.MeshBasicMaterial({map: whiteText});
+        var greenMat = new THREE.MeshBasicMaterial({map: greenText});
 
         /**
          * Ajout du terrain
