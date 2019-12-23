@@ -20,7 +20,7 @@
         return degrees * Math.PI / 180;
     };
     var camera, scene, renderer;
-    var terrain, mesh;
+    var terrain, mesh, array;
     var group = new THREE.Group();
     init();
     animate();
@@ -76,7 +76,7 @@
         /**
          * Affichage
          */
-        
+
         group.add(terrain);
         instanceToScene();
 
@@ -107,6 +107,16 @@
     function animate() {
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
+    }
+
+    function initArray(terrainDim) {
+        array = [];
+        for (let i = 0; i < terrainDim.Height; i++) {
+            array[i] = [];
+            for (let j = 0; j < terrainDim.Width; j++) {
+                array[i][j] = 0;
+            }
+        }
     }
 </script>
 </body>
