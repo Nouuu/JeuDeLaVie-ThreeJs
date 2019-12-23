@@ -51,10 +51,19 @@
         var greenMat = new THREE.MeshBasicMaterial({map: greenText});
 
         /**
+         * Dimensions
+         */
+
+        var terrainDim = {
+            Width: 100,
+            Height: 50
+        };
+
+        /**
          * Ajout du terrain
          */
-        geometry = new THREE.PlaneGeometry(100, 50);
-        terrain = new THREE.Mesh(geometry);
+        geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+        terrain = new THREE.Mesh(geometry, blackMat);
         terrain.rotateX(Math.radians(-90));
         scene.add(terrain);
 
