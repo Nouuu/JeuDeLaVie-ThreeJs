@@ -166,7 +166,7 @@
         let counter = 0;
         let alive = 0;
         for (let i = 0; i < terrainDim.Height; i++) {
-            for (let j = 0; j < terrainDim.Height; j++) {
+            for (let j = 0; j < terrainDim.Width; j++) {
                 alive = 0;
                 if (array[i][j] === 1) {
                     counter++;
@@ -207,7 +207,6 @@
                 
                 if ((array[i][j] === 1 && alive === 2) || alive === 3) {
                     newArray[i][j] = 1;
-                    console.log("alive = ".concat(alive));
                 } else {
                     newArray[i][j] = 0;
                 }
@@ -224,11 +223,9 @@
         if (i >= 0 && j >= 0 && i < terrainDim.Height && j < terrainDim.Width) {
             if (array[i][j] === 1) {
                 alive = alive + 1;
-                console.log("alive = ".concat(alive));
-                console.dir(alive);
-                return alive;
             }
         }
+        return alive;
     }
 
 </script>
