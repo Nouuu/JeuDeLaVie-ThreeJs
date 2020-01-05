@@ -62,6 +62,8 @@
         camera.rotation.x -= Math.radians(90);
         var geometry;
 
+        createPanel();
+
         /**
          * Ajout du terrain
          */
@@ -81,8 +83,6 @@
         group.add(terrain);
         showArray();
         instanceToScene();
-
-        createPanel();
 
         /**
          * Options de rendu
@@ -198,7 +198,41 @@
         array = newArray;
     }
 
-    </script>
+    function createPanel() {
+        var panel = new GUI( { width: 200 } );
+        var folder1 = panel.addFolder('Light');
+        var folder2 = panel.addFolder('Size');
+        var folder3 = panel.addFolder('Speed');
+
+        settings = {
+            'terrainWidth': 5,
+            'terrainHeight': 5/*,
+            'speed': 5,
+            'pause/continue': pause,
+            'from walk to idle': function () {
+                prepareCrossFade( walkAction, idleAction, 1.0 );
+            }*/
+        };
+
+        folder2.add(settings, 'terrainWidth', 0, 10, 0.01 );
+        folder2.add(settings, 'terrainHeight', 0, 10, 0.01 );
+        /*folder1.add( settings, 'show model' ).onChange( showModel );
+        folder3.add( settings, 'pause/continue' );
+        folder3.add( settings, 'set custom duration', 0, 10, 0.01 );
+        folder3.add( settings, 'modify run weight', 0.0, 1.0, 0.01 ).listen().onChange( function ( weight ) {
+            setWeight( runAction, weight );
+        } );
+        folder3.add( settings, 'modify time scale', 0.0, 1.5, 0.01 ).onChange( modifyTimeScale );*/
+
+        folder1.open();
+        folder2.open();
+        folder3.open();
+    }
+
+
+
+
+</script>
 </body>
 
 </html>
