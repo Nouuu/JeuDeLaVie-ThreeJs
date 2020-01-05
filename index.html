@@ -178,8 +178,8 @@
                 ];
                 neighbours.forEach(neighbour => {
                     if (neighbour.y >= 0 && neighbour.x >= 0 && neighbour.y < terrainDim.Height && neighbour.x < terrainDim.Width) {
-                        if (array[i][j] === 1) {
-                            alive = alive + 1;
+                        if (array[neighbour.y][neighbour.x] === 1) {
+                            alive++;
                         }
                     }
                 });
