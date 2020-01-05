@@ -26,7 +26,7 @@
     let arrayGroup = new THREE.Group();
     let arrayGroupNew = new THREE.Group();
     let frequence = 0;
-    let frequenceMax = 60;
+    let frequenceMax = 3;
 
     /**
      * Textures matériel
@@ -47,8 +47,8 @@
      * Dimensions
      */
     const terrainDim = {
-        Width: 50,
-        Height: 25
+        Width: 100,
+        Height: 50
     };
 
     init();
@@ -58,7 +58,7 @@
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.z = 0;
-        camera.position.y = 30;
+        camera.position.y = 40;
         camera.rotation.x -= Math.radians(90);
         var geometry;
 
@@ -78,8 +78,8 @@
          initArray();
 
         /**
-        * Affichage
-        */
+         * Affichage
+         */
         group.add(terrain);
         showArray();
         instanceToScene();
@@ -125,9 +125,9 @@
         for (let i = 0; i < terrainDim.Height; i++) {
             for (let j = 0; j < terrainDim.Width; j++) {
                 if (array[i][j] === 1) {
-                    cube.position.set(j - Math.ceil(terrainDim.Width / 2) + 0.5,
+                    cube.position.set(j - terrainDim.Width / 2 + .5,
                         -0.25,
-                        i - Math.ceil(terrainDim.Height / 2) + 1);
+                        i - terrainDim.Height / 2 + .5);
                     arrayGroupNew.add(cube.clone());
                 }
             }
@@ -144,7 +144,7 @@
             array[i] = [];
             newArray[i] = [];
             for (let j = 0; j < terrainDim.Width; j++) {
-                array[i][j] = Math.floor(Math.random() * 11) % 2;
+                array[i][j] = Math.floor(Math.random() * 11) % 11;
                 newArray[i][j] = 0;
             }
         }
