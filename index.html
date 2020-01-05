@@ -26,6 +26,7 @@
     var arrayGroupNew = new THREE.Group();
     var frequence = 0;
     var frequenceMax = 60;
+    var playing = true;
 
     /**
      * Textures matériel
@@ -113,7 +114,7 @@
 
     function animate() {
         requestAnimationFrame(animate);
-        if (++frequence % frequenceMax === 0) {
+        if (++frequence % frequenceMax === 0 && playing) {
             isAlive();
             showArray();
         }
@@ -220,6 +221,10 @@
             }
         }
         return alive;
+    }
+
+    function pause() {
+        playing = !playing;
     }
 
 </script>
