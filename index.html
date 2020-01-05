@@ -47,8 +47,8 @@
      */
 
     var terrainDim = {
-        Width: 80,
-        Height: 40
+        Width: 4,
+        Height: 4
     };
 
 
@@ -187,7 +187,7 @@
         let counter = 0;
         let alive = 0;
         for (let i = 0; i < terrainDim.Height; i++) {
-            for (let j = 0; j < terrainDim.Height; j++) {
+            for (let j = 0; j < terrainDim.Width; j++) {
                 alive = 0;
                 if (array[i][j] === 1) {
                     counter++;
@@ -196,60 +196,36 @@
                 let b;
                 a = i - 1;
                 b = j - 1;
-                if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
-                    if (array[a][b] === 1) {
-                        alive = alive + 1;
-                    }
-                }
+                alive = nearAlive(a, b, terrainDim, alive);
+
                 a = i - 1;
                 b = j;
-                if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
-                    if (array[a][b] === 1) {
-                        alive = alive + 1;
-                    }
-                }
+                alive = nearAlive(a, b, terrainDim, alive);
+                
                 a = i - 1;
                 b = j + 1;
-                if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
-                    if (array[a][b] === 1) {
-                        alive = alive + 1;
-                    }
-                }
+                alive = nearAlive(a, b, terrainDim, alive);
+
                 a = i;
                 b = j - 1;
-                if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
-                    if (array[a][b] === 1) {
-                        alive = alive + 1;
-                    }
-                }
+                alive = nearAlive(a, b, terrainDim, alive);
+
                 a = i;
                 b = j + 1;
-                if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
-                    if (array[a][b] === 1) {
-                        alive = alive + 1;
-                    }
-                }
+                alive = nearAlive(a, b, terrainDim, alive);
+
                 a = i + 1;
                 b = j - 1;
-                if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
-                    if (array[a][b] === 1) {
-                        alive = alive + 1;
-                    }
-                }
+                alive = nearAlive(a, b, terrainDim, alive);
+
                 a = i + 1;
                 b = j;
-                if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
-                    if (array[a][b] === 1) {
-                        alive = alive + 1;
-                    }
-                }
+                alive = nearAlive(a, b, terrainDim, alive);
+
                 a = i + 1;
                 b = j + 1;
-                if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
-                    if (array[a][b] === 1) {
-                        alive = alive + 1;
-                    }
-                }
+                alive = nearAlive(a, b, terrainDim, alive);
+                
                 if ((array[i][j] === 1 && alive === 2) || alive === 3) {
                     newArray[i][j] = 1;
                 } else {
@@ -263,6 +239,16 @@
         }
         array = newArray;
     }
+
+    function nearAlive(i, j, terrainDim, alive){
+        if (i >= 0 && j >= 0 && i < terrainDim.Height && j < terrainDim.Width) {
+            if (array[i][j] === 1) {
+                alive = alive + 1;
+            }
+        }
+        return alive;
+    }
+
 </script>
 </body>
 </html>
