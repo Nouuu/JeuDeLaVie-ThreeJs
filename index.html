@@ -25,6 +25,7 @@
     var arrayGroup = new THREE.Group();
     var arrayGroupNew = new THREE.Group();
     var frequence = 0;
+    var frequenceMax = 60;
 
     /**
      * Textures matériel
@@ -47,8 +48,8 @@
      */
 
     var terrainDim = {
-        Width: 4,
-        Height: 4
+        Width: 50,
+        Height: 25
     };
 
 
@@ -114,18 +115,14 @@
 
     function animate() {
         requestAnimationFrame(animate);
-        if (++frequence % 120 === 0) {
-            initArray();
+        if (++frequence % frequenceMax === 0) {
+            isAlive();
             showArray();
         }
         renderer.render(scene, camera);
     }
 
     function showArray() {
-        /**
-         * blablabla
-         * on utilise array et group2
-         */
         arrayGroupNew = new THREE.Group();
         let geometry = new THREE.BoxGeometry(0.9, 0.5, 0.9);
         let cube = new THREE.Mesh(geometry, greenMat);
@@ -135,7 +132,7 @@
                 if (array[i][j] === 1) {
                     cube.position.set(j - Math.ceil(terrainDim.Width / 2) + 0.5,
                         -0.25,
-                        i - Math.ceil(terrainDim.Height / 2) + 0.5);
+                        i - Math.ceil(terrainDim.Height / 2) + 1);
                     arrayGroupNew.add(cube.clone());
                 }
             }
