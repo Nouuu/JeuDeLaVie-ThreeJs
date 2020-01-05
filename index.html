@@ -16,16 +16,14 @@
     import * as THREE from './three.module.js';
     // import {OrbitControls} from './OrbitControls.js';
 
-    Math.radians = function (degrees) {
-        return degrees * Math.PI / 180;
-    };
-    var camera, scene, renderer;
-    var terrain, mesh, array, newArray;
-    var group = new THREE.Group();
-    var arrayGroup = new THREE.Group();
-    var arrayGroupNew = new THREE.Group();
-    var frequence = 0;
-    var frequenceMax = 60;
+    Math.radians = (degrees) => degrees * Math.PI / 180;
+    let camera, scene, renderer;
+    let terrain, mesh, array, newArray;
+    let group = new THREE.Group();
+    let arrayGroup = new THREE.Group();
+    let arrayGroupNew = new THREE.Group();
+    let frequence = 0;
+    let frequenceMax = 3;
 
     /**
      * Textures matériel
@@ -46,10 +44,9 @@
     /**
      * Dimensions
      */
-
-    var terrainDim = {
-        Width: 50,
-        Height: 25
+    const terrainDim = {
+        Width: 9,
+        Height: 19
     };
 
 
@@ -60,7 +57,7 @@
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.z = 0;
-        camera.position.y = 30;
+        camera.position.y = 20;
         camera.rotation.x -= Math.radians(90);
         var geometry;
 
@@ -82,7 +79,6 @@
         /**
          * Affichage
          */
-
         group.add(terrain);
         showArray();
         // setInterval(isAlive(), 3000);
@@ -130,9 +126,9 @@
         for (let i = 0; i < terrainDim.Height; i++) {
             for (let j = 0; j < terrainDim.Width; j++) {
                 if (array[i][j] === 1) {
-                    cube.position.set(j - Math.ceil(terrainDim.Width / 2) + 0.5,
+                    cube.position.set(j - terrainDim.Width / 2 + .5,
                         -0.25,
-                        i - Math.ceil(terrainDim.Height / 2) + 1);
+                        i - terrainDim.Height / 2 + .5);
                     arrayGroupNew.add(cube.clone());
                 }
             }
@@ -198,7 +194,7 @@
                 a = i - 1;
                 b = j;
                 alive = nearAlive(a, b, terrainDim, alive);
-                
+
                 a = i - 1;
                 b = j + 1;
                 alive = nearAlive(a, b, terrainDim, alive);
@@ -222,7 +218,7 @@
                 a = i + 1;
                 b = j + 1;
                 alive = nearAlive(a, b, terrainDim, alive);
-                
+
                 if ((array[i][j] === 1 && alive === 2) || alive === 3) {
                     newArray[i][j] = 1;
                 } else {
@@ -237,7 +233,7 @@
         array = newArray;
     }
 
-    function nearAlive(i, j, terrainDim, alive){
+    function nearAlive(i, j, terrainDim, alive) {
         if (i >= 0 && j >= 0 && i < terrainDim.Height && j < terrainDim.Width) {
             if (array[i][j] === 1) {
                 alive = alive + 1;
