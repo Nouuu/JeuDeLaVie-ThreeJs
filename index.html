@@ -23,6 +23,8 @@
     var terrain, mesh, array, newArray;
     var group = new THREE.Group();
     var arrayGroup = new THREE.Group();
+    var arrayGroupNew = new THREE.Group();
+    var frequence = 0;
 
     /**
      * Textures matériel
@@ -45,8 +47,8 @@
      */
 
     var terrainDim = {
-        Width: 50,
-        Height: 25
+        Width: 80,
+        Height: 40
     };
 
 
@@ -57,7 +59,7 @@
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.z = 0;
-        camera.position.y = 40;
+        camera.position.y = 30;
         camera.rotation.x -= Math.radians(90);
         var geometry;
 
@@ -75,7 +77,6 @@
          * CubeLife
          */
         initArray();
-        setInterval(isAlive(), 3000);
 
         /**
          * Affichage
@@ -83,7 +84,8 @@
 
         group.add(terrain);
         showArray();
-        scene.add(arrayGroup);
+        // setInterval(isAlive(), 3000);
+        // scene.add(arrayGroup);
         instanceToScene();
 
         /**
@@ -112,16 +114,35 @@
 
     function animate() {
         requestAnimationFrame(animate);
+        if (++frequence % 120 === 0) {
+            initArray();
+            showArray();
+        }
         renderer.render(scene, camera);
     }
 
     function showArray() {
-
         /**
          * blablabla
          * on utilise array et group2
          */
+        arrayGroupNew = new THREE.Group();
+        let geometry = new THREE.BoxGeometry(0.9, 0.5, 0.9);
+        let cube = new THREE.Mesh(geometry, greenMat);
 
+        for (let i = 0; i < terrainDim.Height; i++) {
+            for (let j = 0; j < terrainDim.Width; j++) {
+                if (array[i][j] === 1) {
+                    cube.position.set(j - Math.ceil(terrainDim.Width / 2) + 0.5,
+                        -0.25,
+                        i - Math.ceil(terrainDim.Height / 2) + 0.5);
+                    arrayGroupNew.add(cube.clone());
+                }
+            }
+        }
+        scene.remove(arrayGroup);
+        arrayGroup = arrayGroupNew;
+        scene.add(arrayGroup);
     }
 
     function initArray() {
