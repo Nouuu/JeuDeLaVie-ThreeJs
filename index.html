@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <title>Game of life</title>
     <meta charset="utf-8">
@@ -18,39 +19,37 @@
     var settings;
     // import {OrbitControls} from './OrbitControls.js';
 
-    Math.radians = function (degrees) {
-        return degrees * Math.PI / 180;
-    };
-    var camera, scene, renderer;
-    var terrain, mesh, array, newArray;
-    var group = new THREE.Group();
-    var arrayGroup = new THREE.Group();
+    Math.radians = (degrees) => degrees * Math.PI / 180;
+    let camera, scene, renderer;
+    let terrain, mesh, array, newArray;
+    let group = new THREE.Group();
+    let arrayGroup = new THREE.Group();
+    let arrayGroupNew = new THREE.Group();
+    let frequence = 0;
+    let frequenceMax = 60;
 
     /**
      * Textures matériel
      */
-    var blackTextPath = './text/black-s.png';
-    var whiteTextPath = './text/white-s.png';
-    var greenTextPath = './text/green-s.png';
+    const blackTextPath = './text/black-s.png';
+    const whiteTextPath = './text/white-s.png';
+    const greenTextPath = './text/green-s.png';
 
-    var blackText = new THREE.TextureLoader().load(blackTextPath);
-    var whiteText = new THREE.TextureLoader().load(whiteTextPath);
-    var greenText = new THREE.TextureLoader().load(greenTextPath);
+    const blackText = new THREE.TextureLoader().load(blackTextPath);
+    const whiteText = new THREE.TextureLoader().load(whiteTextPath);
+    const greenText = new THREE.TextureLoader().load(greenTextPath);
 
-    var blackMat = new THREE.MeshBasicMaterial({map: blackText});
-    var whiteMat = new THREE.MeshBasicMaterial({map: whiteText});
-    var greenMat = new THREE.MeshBasicMaterial({map: greenText});
-
+    const blackMat = new THREE.MeshBasicMaterial({map: blackText});
+    const whiteMat = new THREE.MeshBasicMaterial({map: whiteText});
+    const greenMat = new THREE.MeshBasicMaterial({map: greenText});
 
     /**
      * Dimensions
      */
-
-    var terrainDim = {
+    const terrainDim = {
         Width: 50,
         Height: 25
     };
-
 
     init();
     animate();
@@ -59,33 +58,28 @@
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.z = 0;
-        camera.position.y = 40;
+        camera.position.y = 30;
         camera.rotation.x -= Math.radians(90);
         var geometry;
-
 
         /**
          * Ajout du terrain
          */
-        geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+         geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
         terrain = new THREE.Mesh(geometry, whiteMat);
         terrain.rotateX(Math.radians(-90));
         scene.add(terrain);
 
-
         /**
          * CubeLife
          */
-        initArray();
-        setInterval(isAlive(), 3000);
+         initArray();
 
         /**
-         * Affichage
-         */
-
+        * Affichage
+        */
         group.add(terrain);
         showArray();
-        scene.add(arrayGroup);
         instanceToScene();
 
         createPanel();
@@ -93,7 +87,7 @@
         /**
          * Options de rendu
          */
-        renderer = new THREE.WebGLRenderer({antialias: true});
+         renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -116,16 +110,31 @@
 
     function animate() {
         requestAnimationFrame(animate);
+        if (++frequence % frequenceMax === 0) {
+            isAlive();
+            showArray();
+        }
         renderer.render(scene, camera);
     }
 
     function showArray() {
+        arrayGroupNew = new THREE.Group();
+        let geometry = new THREE.BoxGeometry(0.9, 0.5, 0.9);
+        let cube = new THREE.Mesh(geometry, greenMat);
 
-        /**
-         * blablabla
-         * on utilise array et group2
-         */
-
+        for (let i = 0; i < terrainDim.Height; i++) {
+            for (let j = 0; j < terrainDim.Width; j++) {
+                if (array[i][j] === 1) {
+                    cube.position.set(j - Math.ceil(terrainDim.Width / 2) + 0.5,
+                        -0.25,
+                        i - Math.ceil(terrainDim.Height / 2) + 1);
+                    arrayGroupNew.add(cube.clone());
+                }
+            }
+        }
+        scene.remove(arrayGroup);
+        arrayGroup = arrayGroupNew;
+        scene.add(arrayGroup);
     }
 
     function initArray() {
@@ -141,126 +150,55 @@
         }
     }
 
-    // function tmpArray(terrainDim) {
-    //     tmpArray = [];
-    //     for (let i = 0; i < terrainDim.Height; i++) {
-    //         tmpArray[i] = [];
-    //         for (let j = 0; j < terrainDim.Width; j++) {
-    //             tmpArray[i][j] = 0;
-    //         }
-    //     }
-    // }
-    //
-    // /**
-    //  * Useless
-    //  * newArray = oldArray
-    //  */
-    // function changeArray(oldArray, newArray, terrainDim) {
-    //     for (let i = 0; i < terrainDim.Height; i++) {
-    //         for (let j = 0; j < terrainDim.Height; j++) {
-    //             newArray[i][j] = oldArray[i][j];
-    //         }
-    //     }
-    // }
-
-    /**
-     * A optimiser, bcp trop de if
-     */
     function isAlive() {
-        let counter = 0;
-        let alive = 0;
         for (let i = 0; i < terrainDim.Height; i++) {
-            for (let j = 0; j < terrainDim.Height; j++) {
-                alive = 0;
-                if (array[i][j] === 1) {
-                    counter++;
-                }
-                let a;
-                let b;
-                a = i - 1;
-                b = j - 1;
-                nearAlive(a, b, terrainDim, alive);
-
-                a = i - 1;
-                b = j;
-                nearAlive(a, b, terrainDim, alive);
-                
-                a = i - 1;
-                b = j + 1;
-                nearAlive(a, b, terrainDim, alive);
-
-                a = i;
-                b = j - 1;
-                nearAlive(a, b, terrainDim, alive);
-
-                a = i;
-                b = j + 1;
-                nearAlive(a, b, terrainDim, alive);
-
-                a = i + 1;
-                b = j - 1;
-                nearAlive(a, b, terrainDim, alive);
-
-                a = i + 1;
-                b = j;
-                nearAlive(a, b, terrainDim, alive);
-
-                a = i + 1;
-                b = j + 1;
-                nearAlive(a, b, terrainDim, alive);
-                
+            for (let j = 0; j < terrainDim.Width; j++) {
+                let alive = 0;
+                const neighbours = [
+                    {
+                        x: j - 1, y: i - 1,
+                    },
+                    {
+                        x: j, y: i - 1,
+                    },
+                    {
+                        x: j + 1, y: i - 1,
+                    },
+                    {
+                        x: j + 1, y: i,
+                    },
+                    {
+                        x: j + 1, y: i + 1,
+                    },
+                    {
+                        x: j, y: i + 1,
+                    },
+                    {
+                        x: j - 1, y: i + 1,
+                    },
+                    {
+                        x: j - 1, y: i,
+                    },
+                ];
+                neighbours.forEach(neighbour => {
+                    if (neighbour.y >= 0 && neighbour.x >= 0 && neighbour.y < terrainDim.Height && neighbour.x < terrainDim.Width) {
+                        if (array[neighbour.y][neighbour.x] === 1) {
+                            alive++;
+                        }
+                    }
+                });
+                console.log('alive ' + alive);
                 if ((array[i][j] === 1 && alive === 2) || alive === 3) {
                     newArray[i][j] = 1;
                 } else {
                     newArray[i][j] = 0;
                 }
-                /*console.log("Array[".concat(i, "][", j, "] = ", array[i][j]));
-                console.log("Devient");
-                console.log("Array[".concat(i, "][", j, "] = ", newArray[i][j]));
-                console.log("---");*/
             }
         }
         array = newArray;
     }
 
-    function nearAlive(i, j, terrainDim, alive){
-        if (i >= 0 && j >= 0 && i < terrainDim.Height && j < terrainDim.Width) {
-            if (array[i][j] === 1) {
-                alive = alive + 1;
-            }
-        }
-    }
-
-    function createPanel() {
-        var panel = new GUI( { width: 200 } );
-        var folder1 = panel.addFolder('Light');
-        var folder2 = panel.addFolder('Size');
-        var folder3 = panel.addFolder('Speed');
-
-        settings = {
-            'terrainWidth': 5,
-            'terrainHeight': 5,
-            'speed': 5,
-            'pause/continue': pause/*,
-            'from walk to idle': function () {
-                prepareCrossFade( walkAction, idleAction, 1.0 );
-            }*/
-        };
-
-        folder1.add( settings, 'show model' ).onChange( showModel );
-        folder3.add( settings, 'pause/continue' );
-        folder3.add( settings, 'set custom duration', 0, 10, 0.01 );
-        folder3.add( settings, 'modify run weight', 0.0, 1.0, 0.01 ).listen().onChange( function ( weight ) {
-            setWeight( runAction, weight );
-        } );
-        folder3.add( settings, 'modify time scale', 0.0, 1.5, 0.01 ).onChange( modifyTimeScale );
-
-        folder1.open();
-        folder2.open();
-        folder3.open();
-    }
-
-
-</script>
+    </script>
 </body>
+
 </html>
