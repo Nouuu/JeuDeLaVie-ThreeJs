@@ -15,6 +15,9 @@
 <body>
 <script type="module">
     import * as THREE from './three.module.js';
+    import {GUI} from './dat.gui.module.js';
+
+    var settings;
     // import {OrbitControls} from './OrbitControls.js';
 
     Math.radians = (degrees) => degrees * Math.PI / 180;
@@ -25,6 +28,7 @@
     let arrayGroupNew = new THREE.Group();
     let frequence = 0;
     let frequenceMax = 3;
+    let resume = true;
 
     /**
      * Textures matériel
@@ -45,10 +49,68 @@
      * Dimensions
      */
     const terrainDim = {
-        Width: 100,
-        Height: 50
+        Width: 50,
+        Height: 25
     };
 
+    /**
+     * GUI
+     */
+
+    var params = {
+        Height: 25,
+        Width: 50,
+        Camera: 20,
+        Pause: function () {
+            pause();
+        },
+        Restart: function () {
+            initArray();
+        },
+        Speed: 5
+    };
+    var gui = new GUI({
+        height: 3 * 32 - 1
+    });
+    var folderDim = gui.addFolder('Dimensions');
+    var folderSet = gui.addFolder('Settings');
+    folderDim.open();
+    folderSet.open();
+    folderDim.add(params, 'Width').min(5).max(100).step(1).onFinishChange(function () {
+        terrainDim.Width = params.Width;
+        initArray();
+        scene.remove(terrain);
+        let geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+        terrain = new THREE.Mesh(geometry, whiteMat);
+        terrain.rotateX(Math.radians(-90));
+        scene.add(terrain);
+        resume = true;
+    });
+
+    folderDim.add(params, 'Height').min(5).max(50).step(1).onFinishChange(function () {
+        terrainDim.Height = params.Height;
+        initArray();
+        scene.remove(terrain);
+        let geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+        terrain = new THREE.Mesh(geometry, whiteMat);
+        terrain.rotateX(Math.radians(-90));
+        scene.add(terrain);
+        resume = true;
+    });
+
+    gui.add(params, 'Camera').min(1).max(58).step(0.1).onChange(function () {
+        camera.position.y = 60 - params.Camera;
+    });
+    folderSet.add(params, 'Pause').name('Pause / Resume');
+    folderSet.add(params, 'Restart').name('Start new game').onChange(function () {
+        resume = true;
+    });
+    folderSet.add(params, 'Speed').min(1).max(60).step(1).onChange(function () {
+        frequenceMax = Math.round(60 / params.Speed);
+    });
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     init();
     animate();
 
@@ -60,10 +122,12 @@
         camera.rotation.x -= Math.radians(90);
         var geometry;
 
+        // createPanel();
+
         /**
          * Ajout du terrain
          */
-         geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+        geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
         terrain = new THREE.Mesh(geometry, whiteMat);
         terrain.rotateX(Math.radians(-90));
         scene.add(terrain);
@@ -71,19 +135,17 @@
         /**
          * CubeLife
          */
-         initArray();
+        initArray();
 
         /**
          * Affichage
          */
-        group.add(terrain);
         showArray();
-        instanceToScene();
 
         /**
          * Options de rendu
          */
-         renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -106,7 +168,7 @@
 
     function animate() {
         requestAnimationFrame(animate);
-        if (++frequence % frequenceMax === 0) {
+        if (resume && frequence++ % frequenceMax === 0) {
             isAlive();
             showArray();
         }
@@ -140,7 +202,7 @@
             array[i] = [];
             newArray[i] = [];
             for (let j = 0; j < terrainDim.Width; j++) {
-                array[i][j] = Math.floor(Math.random() * 11) % 11;
+                array[i][j] = Math.floor(Math.random() * 11) % 8;
                 newArray[i][j] = 0;
             }
         }
@@ -194,7 +256,43 @@
         array = newArray;
     }
 
-    </script>
+    // function createPanel() {
+    //     var panel = new GUI({width: 200, height: 5 * 302 - 1});
+    //     var folder1 = panel.addFolder('Light');
+    //     var folder2 = panel.addFolder('Size');
+    //     var folder3 = panel.addFolder('Speed');
+    //
+    //     settings = {
+    //         'terrainWidth': 5,
+    //         'terrainHeight': 5/*,
+    //         'speed': 5,
+    //         'pause/continue': pause,
+    //         'from walk to idle': function () {
+    //             prepareCrossFade( walkAction, idleAction, 1.0 );
+    //         }*/
+    //     };
+    //
+    //     folder2.add(settings, 'terrainWidth', 0, 100, 1);
+    //     folder2.add(settings, 'terrainHeight', 0, 50, 1);
+    //     /*folder1.add( settings, 'show model' ).onChange( showModel );
+    //     folder3.add( settings, 'pause/continue' );
+    //     folder3.add( settings, 'set custom duration', 0, 10, 0.01 );
+    //     folder3.add( settings, 'modify run weight', 0.0, 1.0, 0.01 ).listen().onChange( function ( weight ) {
+    //         setWeight( runAction, weight );
+    //     } );
+    //     folder3.add( settings, 'modify time scale', 0.0, 1.5, 0.01 ).onChange( modifyTimeScale );*/
+    //
+    //     folder1.open();
+    //     folder2.open();
+    //     folder3.open();
+    // }
+
+    function pause() {
+        resume = !resume;
+    }
+
+
+</script>
 </body>
 
 </html>
