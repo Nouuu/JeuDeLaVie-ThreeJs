@@ -45,8 +45,8 @@
      * Dimensions
      */
     const terrainDim = {
-        Width: 9,
-        Height: 19
+        Width: 100,
+        Height: 50
     };
 
 
@@ -57,7 +57,7 @@
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.z = 0;
-        camera.position.y = 20;
+        camera.position.y = 40;
         camera.rotation.x -= Math.radians(90);
         var geometry;
 
@@ -145,7 +145,7 @@
             array[i] = [];
             newArray[i] = [];
             for (let j = 0; j < terrainDim.Width; j++) {
-                array[i][j] = Math.floor(Math.random() * 11) % 2;
+                array[i][j] = Math.floor(Math.random() * 11) % 11;
                 newArray[i][j] = 0;
             }
         }
