@@ -114,7 +114,7 @@
 
     function animate() {
         requestAnimationFrame(animate);
-        if (++frequence % frequenceMax === 0 && playing) {
+        if (playing &&++frequence % frequenceMax === 0) {
             isAlive();
             showArray();
         }
