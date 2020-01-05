@@ -15,7 +15,8 @@
 <body>
 <script type="module">
     import * as THREE from './three.module.js';
-    import { GUI } from './dat.gui.module.js';
+    import {GUI} from './dat.gui.module.js';
+
     var settings;
     // import {OrbitControls} from './OrbitControls.js';
 
@@ -51,6 +52,25 @@
         Height: 50
     };
 
+    /**
+     * GUI
+     */
+
+    var gui = new GUI({
+        height: 3 * 32 - 1
+    });
+
+    gui.add(terrainDim, 'Width').min(5).max(100).step(1);
+    gui.add(terrainDim, 'Height').min(5).max(50).step(1).onFinishChange(function () {
+        initArray();
+        scene.remove(terrain);
+        let geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+        terrain = new THREE.Mesh(geometry, whiteMat);
+        terrain.rotateX(Math.radians(-90));
+        scene.add(terrain);
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     init();
     animate();
 
@@ -62,12 +82,12 @@
         camera.rotation.x -= Math.radians(90);
         var geometry;
 
-        createPanel();
+        // createPanel();
 
         /**
          * Ajout du terrain
          */
-         geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+        geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
         terrain = new THREE.Mesh(geometry, whiteMat);
         terrain.rotateX(Math.radians(-90));
         scene.add(terrain);
@@ -75,19 +95,17 @@
         /**
          * CubeLife
          */
-         initArray();
+        initArray();
 
         /**
          * Affichage
          */
-        group.add(terrain);
         showArray();
-        instanceToScene();
 
         /**
          * Options de rendu
          */
-         renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -144,7 +162,7 @@
             array[i] = [];
             newArray[i] = [];
             for (let j = 0; j < terrainDim.Width; j++) {
-                array[i][j] = Math.floor(Math.random() * 11) % 11;
+                array[i][j] = Math.floor(Math.random() * 11) % 10;
                 newArray[i][j] = 0;
             }
         }
@@ -199,7 +217,7 @@
     }
 
     function createPanel() {
-        var panel = new GUI( { width: 200 } );
+        var panel = new GUI({width: 200, height: 5 * 302 - 1});
         var folder1 = panel.addFolder('Light');
         var folder2 = panel.addFolder('Size');
         var folder3 = panel.addFolder('Speed');
@@ -214,8 +232,8 @@
             }*/
         };
 
-        folder2.add(settings, 'terrainWidth', 0, 10, 0.01 );
-        folder2.add(settings, 'terrainHeight', 0, 10, 0.01 );
+        folder2.add(settings, 'terrainWidth', 0, 100, 1);
+        folder2.add(settings, 'terrainHeight', 0, 50, 1);
         /*folder1.add( settings, 'show model' ).onChange( showModel );
         folder3.add( settings, 'pause/continue' );
         folder3.add( settings, 'set custom duration', 0, 10, 0.01 );
@@ -228,8 +246,6 @@
         folder2.open();
         folder3.open();
     }
-
-
 
 
 </script>
