@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <title>Game of life</title>
     <meta charset="utf-8">
@@ -11,226 +12,207 @@
         }
     </style>
 </head>
+
 <body>
-<script type="module">
-    import * as THREE from './three.module.js';
-    // import {OrbitControls} from './OrbitControls.js';
+    <script type="module">
+        import * as THREE from './three.module.js';
+        // import {OrbitControls} from './OrbitControls.js';
 
-    Math.radians = function (degrees) {
-        return degrees * Math.PI / 180;
-    };
-    var camera, scene, renderer;
-    var terrain, mesh, array, newArray;
-    var group = new THREE.Group();
-    var arrayGroup = new THREE.Group();
+        Math.radians = function (degrees) {
+            return degrees * Math.PI / 180;
+        };
+        var camera, scene, renderer;
+        var terrain, mesh, array, newArray;
+        var group = new THREE.Group();
+        var arrayGroup = new THREE.Group();
 
-    /**
-     * Textures matériel
-     */
-    var blackTextPath = './text/black-s.png';
-    var whiteTextPath = './text/white-s.png';
-    var greenTextPath = './text/green-s.png';
+        /**
+         * Textures matériel
+         */
+        var blackTextPath = './text/black-s.png';
+        var whiteTextPath = './text/white-s.png';
+        var greenTextPath = './text/green-s.png';
 
-    var blackText = new THREE.TextureLoader().load(blackTextPath);
-    var whiteText = new THREE.TextureLoader().load(whiteTextPath);
-    var greenText = new THREE.TextureLoader().load(greenTextPath);
+        var blackText = new THREE.TextureLoader().load(blackTextPath);
+        var whiteText = new THREE.TextureLoader().load(whiteTextPath);
+        var greenText = new THREE.TextureLoader().load(greenTextPath);
 
-    var blackMat = new THREE.MeshBasicMaterial({map: blackText});
-    var whiteMat = new THREE.MeshBasicMaterial({map: whiteText});
-    var greenMat = new THREE.MeshBasicMaterial({map: greenText});
-
-
-    /**
-     * Dimensions
-     */
-
-    var terrainDim = {
-        Width: 4,
-        Height: 4
-    };
-
-
-    init();
-    animate();
-
-    function init() {
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
-        camera.position.z = 0;
-        camera.position.y = 40;
-        camera.rotation.x -= Math.radians(90);
-        var geometry;
+        var blackMat = new THREE.MeshBasicMaterial({ map: blackText });
+        var whiteMat = new THREE.MeshBasicMaterial({ map: whiteText });
+        var greenMat = new THREE.MeshBasicMaterial({ map: greenText });
 
 
         /**
-         * Ajout du terrain
-         */
-        geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
-        terrain = new THREE.Mesh(geometry, whiteMat);
-        terrain.rotateX(Math.radians(-90));
-        scene.add(terrain);
-
-
-        /**
-         * CubeLife
-         */
-        initArray();
-        setInterval(isAlive(), 3000);
-
-        /**
-         * Affichage
+         * Dimensions
          */
 
-        group.add(terrain);
-        showArray();
-        scene.add(arrayGroup);
-        instanceToScene();
+        var terrainDim = {
+            Width: 4,
+            Height: 4
+        };
 
-        /**
-         * Options de rendu
-         */
-        renderer = new THREE.WebGLRenderer({antialias: true});
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-        window.addEventListener('resize', onWindowResize, false);
-    }
 
-    function instanceToScene(mesh) {
-        if (mesh !== undefined) {
-            group.add(mesh.clone());
+        init();
+        animate();
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
+            camera.position.z = 0;
+            camera.position.y = 40;
+            camera.rotation.x -= Math.radians(90);
+            var geometry;
+
+
+            /**
+             * Ajout du terrain
+             */
+            geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+            terrain = new THREE.Mesh(geometry, whiteMat);
+            terrain.rotateX(Math.radians(-90));
+            scene.add(terrain);
+
+
+            /**
+             * CubeLife
+             */
+            initArray();
+            setInterval(isAlive(), 3000);
+
+            /**
+             * Affichage
+             */
+
+            group.add(terrain);
+            showArray();
+            scene.add(arrayGroup);
+            instanceToScene();
+
+            /**
+             * Options de rendu
+             */
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            window.addEventListener('resize', onWindowResize, false);
         }
-        scene.add(group);
-    }
 
-    function onWindowResize() {
-
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-    }
-
-    function showArray() {
-
-        /**
-         * blablabla
-         * on utilise array et group2
-         */
-
-    }
-
-    function initArray() {
-        array = [];
-        newArray = [];
-        for (let i = 0; i < terrainDim.Height; i++) {
-            array[i] = [];
-            newArray[i] = [];
-            for (let j = 0; j < terrainDim.Width; j++) {
-                array[i][j] = Math.floor(Math.random() * 11) % 2;
-                newArray[i][j] = 0;
+        function instanceToScene(mesh) {
+            if (mesh !== undefined) {
+                group.add(mesh.clone());
             }
+            scene.add(group);
         }
-    }
 
-    // function tmpArray(terrainDim) {
-    //     tmpArray = [];
-    //     for (let i = 0; i < terrainDim.Height; i++) {
-    //         tmpArray[i] = [];
-    //         for (let j = 0; j < terrainDim.Width; j++) {
-    //             tmpArray[i][j] = 0;
-    //         }
-    //     }
-    // }
-    //
-    // /**
-    //  * Useless
-    //  * newArray = oldArray
-    //  */
-    // function changeArray(oldArray, newArray, terrainDim) {
-    //     for (let i = 0; i < terrainDim.Height; i++) {
-    //         for (let j = 0; j < terrainDim.Height; j++) {
-    //             newArray[i][j] = oldArray[i][j];
-    //         }
-    //     }
-    // }
+        function onWindowResize() {
 
-    /**
-     * A optimiser, bcp trop de if
-     */
-    function isAlive() {
-        let counter = 0;
-        let alive = 0;
-        for (let i = 0; i < terrainDim.Height; i++) {
-            for (let j = 0; j < terrainDim.Height; j++) {
-                alive = 0;
-                if (array[i][j] === 1) {
-                    counter++;
-                }
-                let a;
-                let b;
-                a = i - 1;
-                b = j - 1;
-                alive = nearAlive(a, b, terrainDim, alive);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
 
-                a = i - 1;
-                b = j;
-                alive = nearAlive(a, b, terrainDim, alive);
-                
-                a = i - 1;
-                b = j + 1;
-                alive = nearAlive(a, b, terrainDim, alive);
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
 
-                a = i;
-                b = j - 1;
-                alive = nearAlive(a, b, terrainDim, alive);
+        function showArray() {
 
-                a = i;
-                b = j + 1;
-                alive = nearAlive(a, b, terrainDim, alive);
+            /**
+             * blablabla
+             * on utilise array et group2
+             */
 
-                a = i + 1;
-                b = j - 1;
-                alive = nearAlive(a, b, terrainDim, alive);
+        }
 
-                a = i + 1;
-                b = j;
-                alive = nearAlive(a, b, terrainDim, alive);
-
-                a = i + 1;
-                b = j + 1;
-                alive = nearAlive(a, b, terrainDim, alive);
-                
-                if ((array[i][j] === 1 && alive === 2) || alive === 3) {
-                    newArray[i][j] = 1;
-                    console.log("alive = ".concat(alive));
-                } else {
+        function initArray() {
+            array = [];
+            newArray = [];
+            for (let i = 0; i < terrainDim.Height; i++) {
+                array[i] = [];
+                newArray[i] = [];
+                for (let j = 0; j < terrainDim.Width; j++) {
+                    array[i][j] = Math.floor(Math.random() * 11) % 2;
                     newArray[i][j] = 0;
                 }
-                console.log("Array[".concat(i, "][", j, "] = ", array[i][j]));
-                console.log("Devient");
-                console.log("Array[".concat(i, "][", j, "] = ", newArray[i][j]));
-                console.log("---")
             }
         }
-        array = newArray;
-    }
 
-    function nearAlive(i, j, terrainDim, alive){
-        if (i >= 0 && j >= 0 && i < terrainDim.Height && j < terrainDim.Width) {
-            if (array[i][j] === 1) {
-                alive = alive + 1;
-                console.log("alive = ".concat(alive));
-                console.dir(alive);
-                return alive;
+        // function tmpArray(terrainDim) {
+        //     tmpArray = [];
+        //     for (let i = 0; i < terrainDim.Height; i++) {
+        //         tmpArray[i] = [];
+        //         for (let j = 0; j < terrainDim.Width; j++) {
+        //             tmpArray[i][j] = 0;
+        //         }
+        //     }
+        // }
+        //
+        // /**
+        //  * Useless
+        //  * newArray = oldArray
+        //  */
+        // function changeArray(oldArray, newArray, terrainDim) {
+        //     for (let i = 0; i < terrainDim.Height; i++) {
+        //         for (let j = 0; j < terrainDim.Height; j++) {
+        //             newArray[i][j] = oldArray[i][j];
+        //         }
+        //     }
+        // }
+
+        /**
+         * A optimiser, bcp trop de if
+         */
+        function isAlive() {
+            for (let i = 0; i < terrainDim.Height; i++) {
+                for (let j = 0; j < terrainDim.Width; j++) {
+                    let alive = 0;
+                    const neighbours = [
+                        {
+                            x: j - 1, y: i - 1,
+                        },
+                        {
+                            x: j, y: i - 1,
+                        },
+                        {
+                            x: j + 1, y: i - 1,
+                        },
+                        {
+                            x: j + 1, y: i,
+                        },
+                        {
+                            x: j + 1, y: i + 1,
+                        },
+                        {
+                            x: j, y: i + 1,
+                        },
+                        {
+                            x: j - 1, y: i + 1,
+                        },
+                        {
+                            x: j - 1, y: i,
+                        },
+                    ];
+                    neighbours.forEach(neighbour => {
+                        if (neighbour.y >= 0 && neighbour.x >= 0 && neighbour.y < terrainDim.Height && neighbour.x < terrainDim.Width) {
+                            if (array[i][j] === 1) {
+                                alive = alive + 1;
+                            }
+                        }
+                    });
+                    console.log('alive ' + alive);
+                    if ((array[i][j] === 1 && alive === 2) || alive === 3) {
+                        newArray[i][j] = 1;
+                    } else {
+                        newArray[i][j] = 0;
+                    }
+                }
             }
+            array = newArray;
         }
-    }
 
-</script>
+    </script>
 </body>
+
 </html>
