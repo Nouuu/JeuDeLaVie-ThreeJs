@@ -20,14 +20,40 @@
         return degrees * Math.PI / 180;
     };
     var camera, scene, renderer;
-    var terrain, mesh, array;
+    var terrain, mesh, array, newArray;
     var group = new THREE.Group();
-    var group2 = new THREE.Group();
+    var arrayGroup = new THREE.Group();
+
+    /**
+     * Textures matériel
+     */
+    var blackTextPath = './text/black-s.png';
+    var whiteTextPath = './text/white-s.png';
+    var greenTextPath = './text/green-s.png';
+
+    var blackText = new THREE.TextureLoader().load(blackTextPath);
+    var whiteText = new THREE.TextureLoader().load(whiteTextPath);
+    var greenText = new THREE.TextureLoader().load(greenTextPath);
+
+    var blackMat = new THREE.MeshBasicMaterial({map: blackText});
+    var whiteMat = new THREE.MeshBasicMaterial({map: whiteText});
+    var greenMat = new THREE.MeshBasicMaterial({map: greenText});
+
+
+    /**
+     * Dimensions
+     */
+
+    var terrainDim = {
+        Width: 50,
+        Height: 25
+    };
+
+
     init();
     animate();
 
     function init() {
-
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.z = 0;
@@ -37,34 +63,10 @@
 
 
         /**
-         * Textures matériel
-         */
-        var blackTextPath = './text/black-s.png';
-        var whiteTextPath = './text/white-s.png';
-        var greenTextPath = './text/green-s.png';
-
-        var blackText = new THREE.TextureLoader().load(blackTextPath);
-        var whiteText = new THREE.TextureLoader().load(whiteTextPath);
-        var greenText = new THREE.TextureLoader().load(greenTextPath);
-
-        var blackMat = new THREE.MeshBasicMaterial({map: blackText});
-        var whiteMat = new THREE.MeshBasicMaterial({map: whiteText});
-        var greenMat = new THREE.MeshBasicMaterial({map: greenText});
-
-        /**
-         * Dimensions
-         */
-
-        var terrainDim = {
-            Width: 4,
-            Height: 4
-        };
-
-        /**
          * Ajout du terrain
          */
         geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
-        terrain = new THREE.Mesh(geometry, blackMat);
+        terrain = new THREE.Mesh(geometry, whiteMat);
         terrain.rotateX(Math.radians(-90));
         scene.add(terrain);
 
@@ -72,9 +74,8 @@
         /**
          * CubeLife
          */
-        initArray(terrainDim);
-        tmpArray(terrainDim);
-        setInterval(isAlive(terrainDim), 3000);
+        initArray();
+        setInterval(isAlive(), 3000);
 
         /**
          * Affichage
@@ -82,7 +83,7 @@
 
         group.add(terrain);
         showArray();
-        scene.add(group2);
+        scene.add(arrayGroup);
         instanceToScene();
 
         /**
@@ -123,47 +124,50 @@
 
     }
 
-    function initArray(terrainDim) {
+    function initArray() {
         array = [];
+        newArray = [];
         for (let i = 0; i < terrainDim.Height; i++) {
             array[i] = [];
+            newArray[i] = [];
             for (let j = 0; j < terrainDim.Width; j++) {
                 array[i][j] = Math.floor(Math.random() * 11) % 2;
+                newArray[i][j] = 0;
             }
         }
     }
 
-    function tmpArray(terrainDim) {
-        tmpArray = [];
-        for (let i = 0; i < terrainDim.Height; i++) {
-            tmpArray[i] = [];
-            for (let j = 0; j < terrainDim.Width; j++) {
-                tmpArray[i][j] = 0;
-            }
-        }
-    }
-
-    /**
-     * Useless
-     * newArray = oldArray
-     */
-    function changeArray(oldArray, newArray, terrainDim) {
-        for (let i = 0; i < terrainDim.Height; i++) {
-            for (let j = 0; j < terrainDim.Height; j++) {
-                newArray[i][j] = oldArray[i][j];
-            }
-        }
-    }
+    // function tmpArray(terrainDim) {
+    //     tmpArray = [];
+    //     for (let i = 0; i < terrainDim.Height; i++) {
+    //         tmpArray[i] = [];
+    //         for (let j = 0; j < terrainDim.Width; j++) {
+    //             tmpArray[i][j] = 0;
+    //         }
+    //     }
+    // }
+    //
+    // /**
+    //  * Useless
+    //  * newArray = oldArray
+    //  */
+    // function changeArray(oldArray, newArray, terrainDim) {
+    //     for (let i = 0; i < terrainDim.Height; i++) {
+    //         for (let j = 0; j < terrainDim.Height; j++) {
+    //             newArray[i][j] = oldArray[i][j];
+    //         }
+    //     }
+    // }
 
     /**
      * A optimiser, bcp trop de if
      */
-    function isAlive(terrainDim) {
+    function isAlive() {
         let counter = 0;
-        let alived = 0;
+        let alive = 0;
         for (let i = 0; i < terrainDim.Height; i++) {
             for (let j = 0; j < terrainDim.Height; j++) {
-                alived = 0;
+                alive = 0;
                 if (array[i][j] === 1) {
                     counter++;
                 }
@@ -173,74 +177,70 @@
                 b = j - 1;
                 if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
                     if (array[a][b] === 1) {
-                        alived = alived + 1;
+                        alive = alive + 1;
                     }
                 }
                 a = i - 1;
                 b = j;
                 if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
                     if (array[a][b] === 1) {
-                        alived = alived + 1;
+                        alive = alive + 1;
                     }
                 }
                 a = i - 1;
                 b = j + 1;
                 if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
                     if (array[a][b] === 1) {
-                        alived = alived + 1;
+                        alive = alive + 1;
                     }
                 }
                 a = i;
                 b = j - 1;
                 if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
                     if (array[a][b] === 1) {
-                        alived = alived + 1;
+                        alive = alive + 1;
                     }
                 }
                 a = i;
                 b = j + 1;
                 if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
                     if (array[a][b] === 1) {
-                        alived = alived + 1;
+                        alive = alive + 1;
                     }
                 }
                 a = i + 1;
                 b = j - 1;
                 if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
                     if (array[a][b] === 1) {
-                        alived = alived + 1;
+                        alive = alive + 1;
                     }
                 }
                 a = i + 1;
                 b = j;
                 if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
                     if (array[a][b] === 1) {
-                        alived = alived + 1;
+                        alive = alive + 1;
                     }
                 }
                 a = i + 1;
                 b = j + 1;
                 if (a >= 0 && b >= 0 && a < terrainDim.Height && b < terrainDim.Width) {
                     if (array[a][b] === 1) {
-                        alived = alived + 1;
+                        alive = alive + 1;
                     }
                 }
-                if ((array[i][j] === 1 && alived === 2) || alived === 3) {
-                    tmpArray[i][j] = 1;
+                if ((array[i][j] === 1 && alive === 2) || alive === 3) {
+                    newArray[i][j] = 1;
                 } else {
-                    tmpArray[i][j] = 0;
+                    newArray[i][j] = 0;
                 }
                 console.log("Array[".concat(i, "][", j, "] = ", array[i][j]));
                 console.log("Devient");
-                console.log("Array[".concat(i, "][", j, "] = ", tmpArray[i][j]));
+                console.log("Array[".concat(i, "][", j, "] = ", newArray[i][j]));
                 console.log("---")
             }
         }
-        changeArray(tmpArray, array, terrainDim);
-        if (alived !== 0) {
-            //QUOIIII ???!
-            isAlive(terrainDim);
-        }
+        array = newArray;
     }
 </script>
 </body>
