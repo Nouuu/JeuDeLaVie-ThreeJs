@@ -14,6 +14,8 @@
 <body>
 <script type="module">
     import * as THREE from './three.module.js';
+    import { GUI } from './dat.gui.module.js';
+    var settings;
     // import {OrbitControls} from './OrbitControls.js';
 
     Math.radians = function (degrees) {
@@ -85,6 +87,8 @@
         showArray();
         scene.add(arrayGroup);
         instanceToScene();
+
+        createPanel();
 
         /**
          * Options de rendu
@@ -210,10 +214,10 @@
                 } else {
                     newArray[i][j] = 0;
                 }
-                console.log("Array[".concat(i, "][", j, "] = ", array[i][j]));
+                /*console.log("Array[".concat(i, "][", j, "] = ", array[i][j]));
                 console.log("Devient");
                 console.log("Array[".concat(i, "][", j, "] = ", newArray[i][j]));
-                console.log("---")
+                console.log("---");*/
             }
         }
         array = newArray;
@@ -226,6 +230,36 @@
             }
         }
     }
+
+    function createPanel() {
+        var panel = new GUI( { width: 200 } );
+        var folder1 = panel.addFolder('Light');
+        var folder2 = panel.addFolder('Size');
+        var folder3 = panel.addFolder('Speed');
+
+        settings = {
+            'terrainWidth': 5,
+            'terrainHeight': 5,
+            'speed': 5,
+            'pause/continue': pause/*,
+            'from walk to idle': function () {
+                prepareCrossFade( walkAction, idleAction, 1.0 );
+            }*/
+        };
+
+        folder1.add( settings, 'show model' ).onChange( showModel );
+        folder3.add( settings, 'pause/continue' );
+        folder3.add( settings, 'set custom duration', 0, 10, 0.01 );
+        folder3.add( settings, 'modify run weight', 0.0, 1.0, 0.01 ).listen().onChange( function ( weight ) {
+            setWeight( runAction, weight );
+        } );
+        folder3.add( settings, 'modify time scale', 0.0, 1.5, 0.01 ).onChange( modifyTimeScale );
+
+        folder1.open();
+        folder2.open();
+        folder3.open();
+    }
+
 
 </script>
 </body>
