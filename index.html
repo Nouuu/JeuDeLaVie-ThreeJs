@@ -27,7 +27,7 @@
     let arrayGroup = new THREE.Group();
     let arrayGroupNew = new THREE.Group();
     let frequence = 0;
-    let frequenceMax = 3;
+    let frequenceMax = 24;
     let resume = true;
 
     /**
@@ -106,7 +106,7 @@
         resume = true;
     });
     folderSet.add(params, 'Speed').min(1).max(60).step(1).onChange(function () {
-        frequenceMax = Math.round(60 / params.Speed);
+        frequenceMax = Math.round(120 / params.Speed);
     });
 
 
@@ -177,7 +177,7 @@
             for (let j = 0; j < terrainDim.Width; j++) {
                 if (array[i][j] === 1) {
                     cube.position.set(j - terrainDim.Width / 2 + .5,
-                        -0.25,
+                        1.5,
                         i - terrainDim.Height / 2 + .5);
                     arrayGroupNew.add(cube.clone());
                 }
@@ -238,7 +238,7 @@
                         }
                     }
                 });
-                console.log('alive ' + alive);
+                // console.log('alive ' + alive);
                 if ((array[i][j] === 1 && alive === 2) || alive === 3) {
                     newArray[i][j] = 1;
                 } else {
