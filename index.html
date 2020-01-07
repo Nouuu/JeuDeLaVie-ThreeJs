@@ -33,17 +33,10 @@
     /**
      * Textures matériel
      */
-    const blackTextPath = './text/black-s.png';
-    const whiteTextPath = './text/white-s.png';
-    const greenTextPath = './text/green-s.png';
 
-    const blackText = new THREE.TextureLoader().load(blackTextPath);
-    const whiteText = new THREE.TextureLoader().load(whiteTextPath);
-    const greenText = new THREE.TextureLoader().load(greenTextPath);
-
-    const blackMat = new THREE.MeshBasicMaterial({map: blackText});
-    const whiteMat = new THREE.MeshBasicMaterial({map: whiteText});
-    const greenMat = new THREE.MeshBasicMaterial({map: greenText});
+    const blackMat = new THREE.MeshStandardMaterial({color: 0x000000});
+    const whiteMat = new THREE.MeshStandardMaterial({color: 0xffffff});
+    const greenMat = new THREE.MeshStandardMaterial({color: 0x38FF00});
 
     /**
      * Dimensions
@@ -127,8 +120,9 @@
         /**
          * Ajout du terrain
          */
-        geometry = new THREE.PlaneGeometry(terrainDim.Width, terrainDim.Height);
+        geometry = new THREE.PlaneBufferGeometry(terrainDim.Width, terrainDim.Height, 32, 32);
         terrain = new THREE.Mesh(geometry, whiteMat);
+        terrain.receiveShadow = true;
         terrain.rotateX(Math.radians(-90));
         scene.add(terrain);
 
