@@ -151,14 +151,7 @@
         document.body.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
     }
-
-    function instanceToScene(mesh) {
-        if (mesh !== undefined) {
-            group.add(mesh.clone());
-        }
-        scene.add(group);
-    }
-
+    
     function onWindowResize() {
 
         camera.aspect = window.innerWidth / window.innerHeight;
