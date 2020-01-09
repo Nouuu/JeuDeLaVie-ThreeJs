@@ -17,9 +17,6 @@
     import * as THREE from './three.module.js';
     import {GUI} from './dat.gui.module.js';
 
-    var settings;
-    // import {OrbitControls} from './OrbitControls.js';
-
     Math.radians = (degrees) => degrees * Math.PI / 180;
     let camera, scene, renderer;
     let terrain, mesh, array, newArray;
@@ -63,13 +60,12 @@
         },
         Speed: 5
     };
-    var gui = new GUI({
-        height: 3 * 32 - 1
-    });
+    var gui = new GUI();
     var folderDim = gui.addFolder('Dimensions');
     var folderSet = gui.addFolder('Settings');
     folderDim.open();
     folderSet.open();
+
     folderDim.add(params, 'Width').min(5).max(100).step(1).onFinishChange(function () {
         terrainDim.Width = params.Width;
         initArray();
@@ -152,7 +148,7 @@
         document.body.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
     }
-    
+
     function onWindowResize() {
 
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -162,21 +158,22 @@
 
     function animate() {
         requestAnimationFrame(animate);
-        if (resume && frequence++ % frequenceMax === 0) {
+        if (resume && ++frequence % frequenceMax === 0) {
+            frequence = 0;
             isAlive();
             showArray();
         }
 
         let time = Date.now() * 0.0005;
 
-        light1.position.x = Math.sin( time * 0.7 ) * terrainDim.Width/2;
-        light1.position.z = Math.cos( time * 0.3 ) * terrainDim.Height/2;
+        light1.position.x = Math.sin(time * 0.7) * terrainDim.Width / 2;
+        light1.position.z = Math.cos(time * 0.3) * terrainDim.Height / 2;
 
-        light2.position.x = Math.sin( time * 0.3 ) * terrainDim.Width/2;
-        light2.position.z = Math.cos( time * 0.5 ) * terrainDim.Height/2;
+        light2.position.x = Math.sin(time * 0.3) * terrainDim.Width / 2;
+        light2.position.z = Math.cos(time * 0.5) * terrainDim.Height / 2;
 
-        light3.position.x = Math.sin( time * 0.9 ) * terrainDim.Width/2;
-        light3.position.z = Math.cos( time * 0.2 ) * terrainDim.Height/2;
+        light3.position.x = Math.sin(time * 0.9) * terrainDim.Width / 2;
+        light3.position.z = Math.cos(time * 0.2) * terrainDim.Height / 2;
 
         renderer.render(scene, camera);
     }
@@ -192,8 +189,8 @@
         for (let i = 0; i < terrainDim.Height; i++) {
             for (let j = 0; j < terrainDim.Width; j++) {
                 if (array[i][j] === 1) {
-                    cube.position.set(j - terrainDim.Width / 2 + .5,
-                        1.5,
+                    cube.position.set(j - terrainDim.Width / 2 + .5 ,
+                        .5,
                         i - terrainDim.Height / 2 + .5);
                     arrayGroupNew.add(cube.clone());
                 }
@@ -254,7 +251,6 @@
                         }
                     }
                 });
-                // console.log('alive ' + alive);
                 if ((array[i][j] === 1 && alive === 2) || alive === 3) {
                     newArray[i][j] = 1;
                 } else {
@@ -264,37 +260,6 @@
         }
         array = newArray;
     }
-
-    // function createPanel() {
-    //     var panel = new GUI({width: 200, height: 5 * 302 - 1});
-    //     var folder1 = panel.addFolder('Light');
-    //     var folder2 = panel.addFolder('Size');
-    //     var folder3 = panel.addFolder('Speed');
-    //
-    //     settings = {
-    //         'terrainWidth': 5,
-    //         'terrainHeight': 5/*,
-    //         'speed': 5,
-    //         'pause/continue': pause,
-    //         'from walk to idle': function () {
-    //             prepareCrossFade( walkAction, idleAction, 1.0 );
-    //         }*/
-    //     };
-    //
-    //     folder2.add(settings, 'terrainWidth', 0, 100, 1);
-    //     folder2.add(settings, 'terrainHeight', 0, 50, 1);
-    //     /*folder1.add( settings, 'show model' ).onChange( showModel );
-    //     folder3.add( settings, 'pause/continue' );
-    //     folder3.add( settings, 'set custom duration', 0, 10, 0.01 );
-    //     folder3.add( settings, 'modify run weight', 0.0, 1.0, 0.01 ).listen().onChange( function ( weight ) {
-    //         setWeight( runAction, weight );
-    //     } );
-    //     folder3.add( settings, 'modify time scale', 0.0, 1.5, 0.01 ).onChange( modifyTimeScale );*/
-    //
-    //     folder1.open();
-    //     folder2.open();
-    //     folder3.open();
-    // }
 
     function pause() {
         resume = !resume;
@@ -317,8 +282,6 @@
         light3.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({color: 0xFF0AC5})));
         light3.position.set(0, 10, 0);
         light3.castShadow = true;
-
-
 
         scene.add(light1);
         scene.add(light2);
