@@ -51,7 +51,7 @@
     var params = {
         Height: 25,
         Width: 50,
-        Camera: 20,
+        Camera: 30,
         Pause: function () {
             pause();
         },
@@ -108,7 +108,7 @@
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.z = 0;
-        camera.position.y = 40;
+        camera.position.y = 30;
         camera.rotation.x -= Math.radians(90);
         var geometry;
 
@@ -208,7 +208,7 @@
             array[i] = [];
             newArray[i] = [];
             for (let j = 0; j < terrainDim.Width; j++) {
-                array[i][j] = Math.floor(Math.random() * 11) % 8;
+                array[i][j] = Math.floor(Math.random() * 11) % 11;
                 newArray[i][j] = 0;
             }
         }
